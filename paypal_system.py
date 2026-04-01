@@ -50,6 +50,20 @@ class Pet:
     def get_info(self) -> str:
         return f"{self.name} is a {self.age}-year-old {self.species}."
 
+    def mark_task_complete(self, task: Task) -> None:
+        if task in self.tasks:
+            task.completed = True
+            if task.frequency == "daily":
+                new_task = Task(
+                    description=task.description,
+                    duration_minutes=task.duration_minutes,
+                    frequency=task.frequency,
+                    priority=task.priority,
+                    start_time=task.start_time,
+                    completed=False
+                )
+                self.tasks.append(new_task)
+
 
 class Owner:
     def __init__(self, name: str, available_time_minutes: int):

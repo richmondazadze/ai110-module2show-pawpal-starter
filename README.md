@@ -41,3 +41,21 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Testing PawPal+
+
+Run the test suite to verify core functionalities:
+
+```bash
+python -m pytest
+```
+
+The tests cover:
+- Task completion and status changes
+- Adding tasks to pets and tracking counts
+- Scheduling logic including time constraints and priority-based sorting
+- Sorting tasks in chronological order by start time
+- Recurrence logic for daily tasks (creating new tasks upon completion)
+- Conflict detection for overlapping or simultaneous tasks
+
+**Confidence Level**: ⭐⭐⭐⭐⭐ (5/5 stars) - All tests pass with comprehensive coverage of key scheduling, sorting, and task management behaviors.
