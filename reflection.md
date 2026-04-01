@@ -65,6 +65,8 @@ One key change was adding bidirectional relationship attributes (e.g., pets list
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
+The scheduler only checks for exact time matches in conflict detection instead of handling overlapping durations (e.g., a 30-min task at 8:00 overlaps with a 15-min task at 8:15). This tradeoff prioritizes simplicity and performance for small task lists, avoiding complex interval logic, but may miss subtle conflicts in real use. It's reasonable for a basic app, as pet owners can manually adjust times, and full overlap detection would require more code and computation.
+
 - Why is that tradeoff reasonable for this scenario?
 
 ---
