@@ -5,13 +5,54 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+
+Started with a simple domain model: Owner, Pet, Service, Appointment.
+
+Owner is the scheduler actor: has name, available time, and can create appointments.
+
+Pet is the subject: name/species/age + method to expose pet info.
+
+Service is task definition: name/description/duration + method to explain service.
+
+Appointment is the concrete schedule entry: date/time/duration + linked Pet + Service; methods to schedule/cancel.
+
+Relationships:
+Owner → many Pet
+Owner → schedules many Appointment
+Appointment ↔ Pet
+Appointment ↔ Service
+
+
 - What classes did you include, and what responsibilities did you assign to each?
+**Pet
+    stores identity fields (name,species,age)
+    get_info(): reusable description for UI text and plan explanation
+    purpose: isolate pet-specific data and avoid scattering this in scheduler logic
+
+**Owner
+    stores user context (name,available_time)
+    manages the owner’s pet collection and time budget
+    get_pets(): central lookup for scheduling / UI
+    schedule_appointment(...): entrypoint to create/refuse an appointment
+    purpose: where constraints and high-level planning are anchored
+    
+**Service
+    stores activity metadata (name,description,default_duration)
+    get_details(): wraps domain knowledge into human text
+    purpose: decouples “task definition” from “task execution” so scheduler can compose them flexibly
+    
+**Appointment
+    stores scheduled record (date,time,duration,pet,service)
+    schedule(), cancel(): explicit lifecycle and validation hooks
+    purpose: makes plan output verifiable and traceable (e.g., “was this task currently scheduled?”)
 
 **b. Design changes**
 
 - Did your design change during implementation?
-- If yes, describe at least one change and why you made it.
+Yes, my design changed during implementation.
 
+- If yes, describe at least one change and why you made it.
+One key change was adding bidirectional relationship attributes (e.g., pets list in Owner, owner in Pet, appointments in Pet, and owner in Appointment) and implementing state-maintaining logic in methods like Owner.schedule_appointment(). This was necessary to fix bottlenecks like orphaned objects and inconsistent data, ensuring relationships from the UML diagram were properly enforced in code for reliable scheduling and navigation. Without these, the system would have struggled with queries (e.g., finding an owner's pets) and state management as logic was added.
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
