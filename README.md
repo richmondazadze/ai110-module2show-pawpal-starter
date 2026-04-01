@@ -12,15 +12,16 @@ A busy pet owner needs help staying consistent with pet care. They want an assis
 
 Your job is to design the system first (UML), then implement the logic in Python, then connect it to the Streamlit UI.
 
-## What you will build
+## Features
 
-Your final app should:
+PawPal+ includes intelligent algorithms to make pet care planning efficient and user-friendly:
 
-- Let a user enter basic owner + pet info
-- Let a user add/edit tasks (duration + priority at minimum)
-- Generate a daily schedule/plan based on constraints and priorities
-- Display the plan clearly (and ideally explain the reasoning)
-- Include tests for the most important scheduling behaviors
+- **Priority-Based Scheduling**: Tasks are sorted by priority (high → medium → low) and fitted into the owner's available time, ensuring critical care tasks are prioritized.
+- **Time Sorting**: Tasks can be sorted by start time (HH:MM format) for chronological viewing, using Python's `sorted()` with lambda keys for efficient string parsing.
+- **Conflict Detection**: Lightweight algorithm checks for exact time overlaps between tasks, issuing warnings (e.g., "Conflict: Morning walk and Evening grooming overlap") without crashing the app.
+- **Task Filtering**: Filter tasks by completion status (pending/completed) or by specific pet, enabling focused views for multi-pet households.
+- **Daily Recurrence**: Supports recurring tasks (daily/weekly); marking a task complete prepares it for the next occurrence (simplified for demo).
+- **Plan Explanation**: Generates human-readable explanations for daily plans, including total time used and remaining availability.
 
 ## Getting started
 
@@ -30,6 +31,12 @@ Your final app should:
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### Running the App
+
+```bash
+streamlit run app.py
 ```
 
 ### Suggested workflow
@@ -48,6 +55,9 @@ Run the test suite to verify core functionalities:
 
 ```bash
 python -m pytest
+```
+
+Tests cover task completion, task addition, scheduling constraints, and priority sorting.
 ```
 
 The tests cover:

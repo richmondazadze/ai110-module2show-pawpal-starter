@@ -112,3 +112,9 @@ The scheduler only checks for exact time matches in conflict detection instead o
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+
+---
+
+## 📸 Demo
+
+<a href="/course_images/ai110/demo_screenshot.png" target="_blank"><img src='/course_images/ai110/demo_screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>

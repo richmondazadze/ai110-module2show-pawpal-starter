@@ -84,12 +84,13 @@ if owner.pets:
     duration = st.number_input("Duration (minutes)", min_value=1, max_value=240, value=20)
     priority = st.selectbox("Priority", ["low", "medium", "high"], index=2)
     frequency = st.selectbox("Frequency", ["daily", "weekly"], index=0)
+    start_time = st.text_input("Start time (HH:MM)", value="08:00")
 
     if st.button("Add Task"):
         pet = next(p for p in owner.pets if p.name == selected_pet)
-        new_task = Task(description=task_description, duration_minutes=duration, frequency=frequency, priority=priority)
+        new_task = Task(description=task_description, duration_minutes=duration, frequency=frequency, priority=priority, start_time=start_time)
         pet.add_task(new_task)
-        st.success(f"Added task to {pet.name}: {new_task.description}")
+        st.success(f"Added task '{new_task.description}' to {pet.name} at {start_time}")
 else:
     st.info("Add a pet first to add tasks.")
 
@@ -98,12 +99,58 @@ st.divider()
 st.subheader("Current Tasks")
 all_tasks = owner.get_all_tasks()
 if all_tasks:
-    st.write("All Tasks:")
-    for task in all_tasks:
+    # Display sorted by time
+    scheduler = Scheduler(owner)
+    sorted_tasks = scheduler.sort_tasks_by_time(all_tasks)
+    
+    # Prepare data for table
+    task_data = []
+    for task in sorted_tasks:
         status = "✅ Completed" if task.completed else "⏳ Pending"
-        st.write(f"- {task.description} ({task.duration_minutes} min, {task.priority}, {task.frequency}) - {status}")
+        task_data.append({
+            "Pet": next((p.name for p in owner.pets if task in p.tasks), "Unknown"),
+            "Description": task.description,
+            "Time": task.start_time or "No time",
+            "Duration": f"{task.duration_minutes} min",
+            "Priority": task.priority,
+            "Status": status
+        })
+    st.table(task_data)
+    
+    # Conflict detection
+    conflicts = scheduler.detect_conflicts(all_tasks)
+    if conflicts:
+        st.warning("⚠️ Conflicts Detected:")
+        for warning in conflicts:
+            st.warning(warning)
+    else:
+        st.success("✅ No conflicts detected.")
 else:
     st.info("No tasks added yet.")
+
+st.divider()
+
+st.subheader("Filter Tasks")
+if all_tasks:
+    col1, col2 = st.columns(2)
+    with col1:
+        filter_pet = st.selectbox("Filter by Pet", ["All"] + [pet.name for pet in owner.pets])
+    with col2:
+        filter_status = st.selectbox("Filter by Status", ["All", "Pending", "Completed"])
+    
+    filtered_tasks = all_tasks
+    if filter_pet != "All":
+        filtered_tasks = owner.filter_tasks_by_pet(filter_pet)
+    if filter_status != "All":
+        completed = filter_status == "Completed"
+        filtered_tasks = scheduler.filter_tasks_by_status(filtered_tasks, completed)
+    
+    if filtered_tasks:
+        st.write(f"Showing {len(filtered_tasks)} task(s):")
+        for task in filtered_tasks:
+            st.write(f"- {task.description} ({task.start_time or 'No time'}, {task.priority})")
+    else:
+        st.info("No tasks match the filters.")
 
 st.divider()
 
@@ -114,3 +161,15 @@ if st.button("Generate Schedule"):
     explanation = scheduler.explain_plan(plan)
     st.write("### Today's Schedule")
     st.code(explanation)
+    
+    # Show plan in table
+    if plan:
+        plan_data = []
+        for task in plan:
+            plan_data.append({
+                "Task": task.description,
+                "Duration": f"{task.duration_minutes} min",
+                "Priority": task.priority,
+                "Time": task.start_time or "TBD"
+            })
+        st.table(plan_data)
