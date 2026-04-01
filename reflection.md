@@ -139,4 +139,4 @@ The most important thing I learned is that AI is most valuable as a thinking par
 
 ## 📸 Demo
 
-<a href="/course_images/ai110/demo_screenshot.png" target="_blank"><img src='/course_images/ai110/demo_screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
+<a href="demo_screenshot.png" target="_blank"><img src='demo_screenshot.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
